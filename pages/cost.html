@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cost & ROI — PrachanBin</title>
+  <link rel="stylesheet" href="../css/main.css">
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    .cost-page { max-width:1100px; margin:0 auto; padding:2.5rem 2rem 4rem; }
+    .compare-hero { display:grid; grid-template-columns:1fr auto 1fr; gap:1.5rem; align-items:center; margin-bottom:2.5rem; }
+    .cc { background:var(--card); border:1px solid var(--border); border-radius:20px; padding:2rem; text-align:center; }
+    .cc.old { opacity:0.6; }
+    .cc.new { border-color:rgba(0,255,136,0.4); background:rgba(0,255,136,0.04); }
+    .cc-label { font-size:0.7rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:0.5rem; }
+    .cc-num { font-family:'Space Mono',monospace; font-size:2.8rem; font-weight:700; }
+    .cc.old .cc-num { color:var(--red); text-decoration:line-through; }
+    .cc.new .cc-num { color:var(--green); }
+    .cc-sub { font-size:0.8rem; color:var(--muted); margin-top:0.4rem; }
+    .arrow-c { text-align:center; }
+    .arrow-pct { font-family:'Space Mono',monospace; font-size:1rem; font-weight:700; color:var(--green); display:block; margin-top:0.3rem; }
+
+    .cost-block { background:var(--card); border-radius:18px; overflow:hidden; border:1px solid var(--border); margin-bottom:1.8rem; }
+    .cost-block-hd { padding:1.2rem 1.8rem; background:#0d1f10; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border); }
+    .cbh-t { font-size:1rem; font-weight:700; }
+    .cbh-s { font-family:'Space Mono',monospace; font-size:0.95rem; color:var(--amber); }
+
+    table { width:100%; border-collapse:collapse; }
+    th { text-align:left; font-size:0.68rem; color:var(--muted); padding:0.7rem 1.6rem; letter-spacing:0.08em; text-transform:uppercase; background:#0a1a0d; border-bottom:1px solid var(--border); }
+    th:last-child { text-align:right; }
+    td { padding:0.8rem 1.6rem; border-bottom:1px solid #111e13; font-size:0.86rem; vertical-align:top; }
+    tr:last-child td { border-bottom:none; }
+    td:last-child { text-align:right; font-family:'Space Mono',monospace; font-weight:700; }
+    .item-name { font-weight:600; }
+    .item-note { font-size:0.7rem; color:var(--muted); margin-top:0.15rem; }
+    .ic { display:inline-block; font-size:0.63rem; font-weight:700; padding:0.12rem 0.45rem; border-radius:999px; margin-left:0.3rem; vertical-align:middle; }
+    .ic-cut  { background:rgba(255,77,109,0.15); color:var(--red); }
+    .ic-keep { background:rgba(0,255,136,0.1); color:var(--green); }
+    .ic-down { background:rgba(255,184,48,0.15); color:var(--amber); }
+    .p-old { color:var(--muted); text-decoration:line-through; font-size:0.75rem; display:block; }
+    .p-new { color:var(--amber); }
+    .p-free { color:var(--green); }
+    .subtotal td { background:rgba(0,255,136,0.04); font-weight:700; border-top:1px solid rgba(0,255,136,0.15); }
+    .subtotal td:last-child { color:var(--green); font-size:1.05rem; }
+
+    .grand { background:linear-gradient(135deg,rgba(0,255,136,0.07),transparent); border:1px solid rgba(0,255,136,0.25); border-radius:18px; padding:1.8rem; margin-bottom:2rem; display:flex; justify-content:space-between; align-items:center; }
+    .grand-r { text-align:right; }
+    .grand-old { font-family:'Space Mono',monospace; color:var(--muted); text-decoration:line-through; }
+    .grand-new { font-family:'Space Mono',monospace; font-size:2.4rem; font-weight:700; color:var(--green); }
+    .grand-diff { font-size:0.8rem; color:var(--red); }
+
+    .roi-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; margin-bottom:1.5rem; }
+    .roi-card { background:var(--card); border-radius:14px; padding:1.2rem; border:1px solid var(--border); text-align:center; }
+    .roi-num { font-family:'Space Mono',monospace; font-size:1.5rem; font-weight:700; color:var(--green); }
+    .roi-label { font-size:0.75rem; color:var(--muted); margin-top:0.3rem; line-height:1.4; }
+
+    .fund-block { background:var(--card); border-radius:14px; padding:1.4rem; border:1px solid var(--border); }
+    .fund-title { font-weight:700; color:var(--green); margin-bottom:0.8rem; }
+    .fund-grid { display:grid; grid-template-columns:1fr 1fr; gap:0.5rem; }
+    .fund-item { font-size:0.82rem; color:var(--muted); padding:0.3rem 0; }
+  </style>
+</head>
+<body>
+  <nav id="navbar">
+    <div class="logo"><div class="logo-dot"></div>PrachanBin</div>
+    <div class="nav-links">
+      <a href="../index.html">Overview</a>
+      <a href="pitch.html">Pitch Data</a>
+      <a href="qr-result.html">QR Demo</a>
+      <a href="cost.html" class="active">Cost & ROI</a>
+    </div>
+  </nav>
+
+  <div class="cost-page">
+    <div class="section-title reveal">💰 Cost & ROI — Optimized Build</div>
+
+    <div class="compare-hero reveal">
+      <div class="cc old"><div class="cc-label">ราคาเดิม / ถัง</div><div class="cc-num">9,850฿</div><div class="cc-sub">Full Stainless + Solar + 4G</div></div>
+      <div class="arrow-c"><div style="font-size:2rem">→</div><span class="arrow-pct">ลด 32%</span></div>
+      <div class="cc new"><div class="cc-label">ราคาใหม่ / ถัง ✅</div><div class="cc-num">6,670฿</div><div class="cc-sub">HDPE + WiFi + TU Students</div></div>
+    </div>
+
+    <!-- Hardware -->
+    <div class="cost-block reveal">
+      <div class="cost-block-hd"><div class="cbh-t">🔧 Hardware ต่อ 1 ถัง</div><div class="cbh-s">รวม 5,170฿</div></div>
+      <table>
+        <thead><tr><th>รายการ</th><th>Spec</th><th>ราคา</th></tr></thead>
+        <tbody>
+          <tr><td><div class="item-name">ESP32 DevKit <span class="ic ic-keep">KEEP</span></div><div class="item-note">WiFi+BT built-in</div></td><td>ESP32</td><td><span class="p-new">250฿</span></td></tr>
+          <tr><td><div class="item-name">Ultrasonic ×3 <span class="ic ic-keep">KEEP</span></div><div class="item-note">HC-SR04 วัดระดับขยะ</div></td><td>HC-SR04 ×3</td><td><span class="p-new">120฿</span></td></tr>
+          <tr><td><div class="item-name">IR Sensor ×2 <span class="ic ic-keep">KEEP</span></div><div class="item-note">GP2Y0A21 ตรวจการทิ้ง</div></td><td>GP2Y0A21</td><td><span class="p-new">180฿</span></td></tr>
+          <tr><td><div class="item-name">Servo Motor ×2 <span class="ic ic-down">ลดรุ่น</span></div><div class="item-note">SG90 แทน MG996R ประหยัดได้</div></td><td>SG90 mini</td><td><span class="p-old">400฿</span><span class="p-new">120฿</span></td></tr>
+          <tr><td><div class="item-name">LCD 2.8" TFT <span class="ic ic-down">ลดขนาด</span></div><div class="item-note">ILI9341 แสดง QR</div></td><td>ILI9341</td><td><span class="p-old">350฿</span><span class="p-new">200฿</span></td></tr>
+          <tr><td><div class="item-name">ถัง HDPE 3 ช่อง <span class="ic ic-down">เปลี่ยนวัสดุ</span></div><div class="item-note">แทน Stainless — ทนทาน 5+ ปี</div></td><td>HDPE + PVC frame</td><td><span class="p-old">4,500฿</span><span class="p-new">2,500฿</span></td></tr>
+          <tr><td><div class="item-name">Solar Panel <span class="ic ic-cut">ตัดออก</span></div><div class="item-note">ใช้ไฟสาธารณะ BMA แทน</div></td><td>—</td><td><span class="p-old">1,800฿</span><span class="p-free">0฿</span></td></tr>
+          <tr><td><div class="item-name">4G SIM <span class="ic ic-cut">ตัดออก</span></div><div class="item-note">ESP32 WiFi built-in เพียงพอ</div></td><td>—</td><td><span class="p-old">450฿</span><span class="p-free">0฿</span></td></tr>
+          <tr><td><div class="item-name">Power adapter 5V</div><div class="item-note">แทน Solar</div></td><td>USB 5V/2A</td><td><span class="p-new">150฿</span></td></tr>
+          <tr><td><div class="item-name">Misc. (PCB, สาย, relay)</div></td><td>—</td><td><span class="p-new">300฿</span></td></tr>
+          <tr><td><div class="item-name">Vinyl Wrap + Sticker</div><div class="item-note">ทำถัง HDPE ดูสวยงาม</div></td><td>Print vinyl</td><td><span class="p-new">350฿</span></td></tr>
+          <tr class="subtotal"><td colspan="2"><strong>รวม Hardware</strong></td><td><strong>5,170฿</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Labor -->
+    <div class="cost-block reveal">
+      <div class="cost-block-hd"><div class="cbh-t">🎓 แรงงาน TU Students</div><div class="cbh-s">รวม ~500฿</div></div>
+      <table>
+        <thead><tr><th>บทบาท</th><th>คณะ</th><th>ค่าตอบแทน</th></tr></thead>
+        <tbody>
+          <tr><td><div class="item-name">Embedded Programming</div><div class="item-note">ESP32 firmware + sensor logic</div></td><td>Engineering (EE/CE)</td><td><span class="p-free">0฿ (Portfolio)</span></td></tr>
+          <tr><td><div class="item-name">Web Development</div><div class="item-note">QR Page, Dashboard, Firebase</div></td><td>CS / Digital Commerce</td><td><span class="p-free">0฿ (Intern hours)</span></td></tr>
+          <tr><td><div class="item-name">UI/UX Design</div><div class="item-note">หน้าจอ, QR page, Identity</div></td><td>Architecture / Design</td><td><span class="p-free">0฿ (Portfolio)</span></td></tr>
+          <tr><td><div class="item-name">ประกอบ + ติดตั้ง</div><div class="item-note">ค่าขนส่ง + อาหาร</div></td><td>Mixed team</td><td><span class="p-new">~500฿/ถัง</span></td></tr>
+          <tr class="subtotal"><td colspan="2"><strong>รวมค่าแรง</strong></td><td><strong style="color:var(--green)">~500฿</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Grand Total -->
+    <div class="grand reveal">
+      <div>
+        <div style="font-size:1.1rem;font-weight:700">💡 ต้นทุนรวมต่อ 1 ถัง</div>
+        <div style="font-size:0.8rem;color:var(--muted);margin-top:0.3rem">Hardware + TU Student Labor</div>
+        <div style="margin-top:0.6rem;font-size:0.82rem;color:var(--green)">✅ ต่ำกว่า 7,000฿ ตามเป้า</div>
+      </div>
+      <div class="grand-r">
+        <div class="grand-old">เดิม 9,850฿</div>
+        <div class="grand-new">6,670฿</div>
+        <div class="grand-diff">ประหยัด -3,180฿ (-32%)</div>
+      </div>
+    </div>
+
+    <!-- ROI -->
+    <div class="section-title reveal">📈 ROI & Revenue Streams</div>
+    <div class="roi-grid reveal">
+      <div class="roi-card"><div class="roi-num">+3,000฿</div><div class="roi-label">รายได้ขายรีไซเคิล/เดือน (5 ถัง)</div></div>
+      <div class="roi-card"><div class="roi-num">+2,900฿</div><div class="roi-label">รายได้ขายปุ๋ยหมัก/เดือน (5 ถัง)</div></div>
+      <div class="roi-card"><div class="roi-num">Year 1</div><div class="roi-label">Break-even ด้วย Grant + Sponsorship</div></div>
+      <div class="roi-card"><div class="roi-num">Year 2</div><div class="roi-label">Self-sustaining ไม่ต้องพึ่ง Grant</div></div>
+      <div class="roi-card"><div class="roi-num">-40%</div><div class="roi-label">ลดต้นทุนจัดการขยะ BMA ในพื้นที่</div></div>
+      <div class="roi-card"><div class="roi-num">3 ปี</div><div class="roi-label">อายุ Hardware ก่อน Major Maintenance</div></div>
+    </div>
+
+    <div class="fund-block reveal">
+      <div class="fund-title">📌 แหล่งทุนที่เป็นไปได้</div>
+      <div class="fund-grid">
+        <div class="fund-item">🏛️ BMA — งบสิ่งแวดล้อม</div>
+        <div class="fund-item">🌏 UNDP Thailand</div>
+        <div class="fund-item">🏫 TU Social Innovation Fund</div>
+        <div class="fund-item">🏢 Corporate CSR (PTT, SCG)</div>
+        <div class="fund-item">🗺️ TAT — ย่านท่องเที่ยวยั่งยืน</div>
+        <div class="fund-item">🌱 กองทุนสิ่งแวดล้อม กระทรวง ทส.</div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/main.js"></script>
+</body>
+</html>
